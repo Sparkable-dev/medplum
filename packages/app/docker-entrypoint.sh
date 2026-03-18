@@ -1,9 +1,6 @@
 #!/bin/sh
-
-# Error on bad command
 set -e
 
-# Defaults taken from .env.defaults in Medplum monorepo packages/app
 : ${MEDPLUM_BASE_URL:="http://localhost:8103/"}
 : ${MEDPLUM_CLIENT_ID:=""}
 : ${GOOGLE_CLIENT_ID:=""}
@@ -11,9 +8,8 @@ set -e
 : ${MEDPLUM_REGISTER_ENABLED:="true"}
 : ${MEDPLUM_AWS_TEXTRACT_ENABLED:="true"}
 
-# Find all JS files in the assets directory
-# Update the app config
-# Recursively apply to all text files in the app dist directory
+echo "Starting with MEDPLUM_BASE_URL=${MEDPLUM_BASE_URL}"
+
 find "/usr/share/nginx/html/assets" -type f -exec sed -i \
   -e "s|__MEDPLUM_BASE_URL__|${MEDPLUM_BASE_URL}|g" \
   -e "s|__MEDPLUM_CLIENT_ID__|${MEDPLUM_CLIENT_ID}|g" \
@@ -24,6 +20,4 @@ find "/usr/share/nginx/html/assets" -type f -exec sed -i \
   {} \;
 
 echo "Environment variable replacement complete."
-
-# Start nginx
 exec nginx -g 'daemon off;'
